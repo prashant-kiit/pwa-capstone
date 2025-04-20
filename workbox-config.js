@@ -2,7 +2,7 @@ export const globDirectory = "dist/";
 export const globPatterns = [
   "**/*.{html,json,js,css,png,jpg,jpeg,svg,ico}"
 ];
-export const swDest = "dist/serviceWorker.js";
+export const swDest = "dist/serviceWorkerWorkBox.js";
 export const sourcemap = false;
 export const cleanupOutdatedCaches = true;
 export const skipWaiting = true;
