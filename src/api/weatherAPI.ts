@@ -1,54 +1,40 @@
 import axios from 'axios';
-import { WeatherData } from '../types/weather';
-import { mockWeatherData } from './mockData';
-
-// In a real app, this would be stored in environment variables
-// For this demo, we're using a mock implementation instead of a real API key
-// const API_KEY = 'your_api_key_here';
-// const BASE_URL = 'https://api.openweathermap.org/data/2.5';
+import { CurrentWeather, Forecast, Location } from '../types/weather';
+import { formatForecastData, formatWeatherData } from '../utils/helpers';
 
 export const fetchWeatherData = async (
-  location: string, 
+  location: string,
   unit: 'metric' | 'imperial' = 'metric'
-): Promise<WeatherData> => {
+): Promise<{ location: Location, currentWeather: CurrentWeather, forecast: Forecast[] }> => {
   try {
-    // In a real implementation, we would make API calls to a weather service
-    // For example:
-    /*
+
     const currentWeatherResponse = await axios.get(
-      `${BASE_URL}/weather?q=${location}&units=${unit}&appid=${API_KEY}`
+      `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unit}&appid=3d65267a515fe0ab3739cdc2d8e34ea2`
     );
-    
+
     const forecastResponse = await axios.get(
-      `${BASE_URL}/forecast?q=${location}&units=${unit}&appid=${API_KEY}`
+      `https://api.openweathermap.org/data/2.5/forecast?q=${location}&units=${unit}&appid=3d65267a515fe0ab3739cdc2d8e34ea2`
     );
-    
-    // Then transform the responses to match our WeatherData type
-    */
-    
-    // For this demo, we'll return mock data with a slight delay to simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Customize the mock data based on the location and unit
-    const customizedData = { ...mockWeatherData };
-    
+
+    const customizedData = { ...formatWeatherData(currentWeatherResponse?.data), ...formatForecastData(forecastResponse?.data?.list) };
+
     // Update location
     customizedData.location.city = location.split(',')[0];
-    
+
     // Adjust temperatures for imperial units if needed
     if (unit === 'imperial') {
       // Convert temperatures from Celsius to Fahrenheit
-      const celsiusToFahrenheit = (celsius: number) => (celsius * 9/5) + 32;
-      
+      const celsiusToFahrenheit = (celsius: number) => (celsius * 9 / 5) + 32;
+
       customizedData.currentWeather.temperature = celsiusToFahrenheit(customizedData.currentWeather.temperature);
       customizedData.currentWeather.feelsLike = celsiusToFahrenheit(customizedData.currentWeather.feelsLike);
       customizedData.currentWeather.minTemperature = celsiusToFahrenheit(customizedData.currentWeather.minTemperature);
       customizedData.currentWeather.maxTemperature = celsiusToFahrenheit(customizedData.currentWeather.maxTemperature);
       customizedData.currentWeather.details.feelsLike = celsiusToFahrenheit(customizedData.currentWeather.details.feelsLike);
-      
+
       // Convert wind speed from m/s to mph
       customizedData.currentWeather.details.windSpeed = customizedData.currentWeather.details.windSpeed * 2.237;
-      
+
       // Update forecast
       customizedData.forecast = customizedData.forecast.map(day => ({
         ...day,
@@ -57,26 +43,8 @@ export const fetchWeatherData = async (
         windSpeed: day.windSpeed * 2.237
       }));
     }
-    
-    // Randomly change weather condition based on location string
-    // This makes the app more interesting when searching different locations
-    const conditions = [
-      'Clear', 'Partly cloudy', 'Cloudy', 'Overcast', 
-      'Light rain', 'Moderate rain', 'Heavy rain',
-      'Thunderstorm', 'Fog', 'Light snow', 'Snow'
-    ];
-    
-    // Use the length of the location string to seed a pseudo-random condition
-    const conditionIndex = location.length % conditions.length;
-    const newCondition = conditions[conditionIndex];
-    
-    customizedData.currentWeather.condition = newCondition;
-    
-    // Update the first forecast day to match current condition
-    if (customizedData.forecast.length > 0) {
-      customizedData.forecast[0].condition = newCondition;
-    }
-    
+
+    console.log("customizedData", customizedData);
     return customizedData;
   } catch (error) {
     console.error('Error fetching weather data:', error);
