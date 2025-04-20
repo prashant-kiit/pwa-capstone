@@ -9,6 +9,7 @@
     "build": "vite build && workbox generateSW workbox-config.js",
     "lint": "eslint .",
     "preview": "vite preview",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
