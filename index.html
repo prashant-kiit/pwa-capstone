@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/png" href="/pwa-capstone/assets/image-BKgafpcy.png" />
+    <link rel="manifest" href="/pwa-capstone/assets/manifest-DgjNQuNX.json" />
+    <title>Weather App</title>
+    <script type="module" crossorigin src="/pwa-capstone/assets/index-CBKxRdVC.js"></script>
+    <link rel="stylesheet" crossorigin href="/pwa-capstone/assets/index-BYIFUKxG.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("./serviceWorker.js")
+            .then((reg) => console.log("Success: ", reg.scope))
+            .catch((err) => console.log("Failure: ", err));
+        });
+      }
+    </script>
+  </body>
+</html>
