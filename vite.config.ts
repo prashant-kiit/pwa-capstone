@@ -7,5 +7,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  base: '/pwa-capstone',
+  // base: '/pwa-capstone',
 });
